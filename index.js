@@ -41,7 +41,7 @@ exports.getHash = function (var_args) {
             throw new Error('invalid type')
         }
     }
-    var hash = new SHA3(sha3bits).update(Buffer.concat(buffer)); 
+    var hash = new SHA3(sha3bits).update(Buffer.concat(buffer));
     return hash.digest('hex');
 }
 
@@ -65,15 +65,15 @@ function isValidPrivate(privateKey) {
     return secp256k1.privateKeyVerify(privateKey);
 }
 
+function intToHex(i) {
+    var hex = i.toString(16);
+    if (hex.length % 2) {
+        hex = '0' + hex;
+    }
+    return '0x' + hex;
+}
+
 function intToBuffer(i) {
     var hex = intToHex(i);
     return new Buffer(hex.slice(2), 'hex');
-}
-    
-    nction intToHex (i) {
-        r hex = i.toString(16);
-    if (hex.length % 2) {
-      hex = '0' + hex;
-  }
-  return '0x' + hex;
 }
