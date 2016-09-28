@@ -49,6 +49,7 @@ _UpgradeReport_Files/
 /deploy
 /build
 /settings
+/dist/*
 
 #include compiled contracts
 !/src/EthereumContractBuilder/contracts/bin/

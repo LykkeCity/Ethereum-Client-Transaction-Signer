@@ -4,10 +4,10 @@ const BN = require('bn.js')
 const SHA3 = require('keccakjs')
 
 var account_a = "0x960336a077fB32d675405bd0A6cD0cb74aaa5062",
-    account_b = "0xb295e245eD2fdf5776c3C8a49f0403BF0242262A",
-    private_key_a = "4085dde01ea641a0f4fd6586ca11fc1f5df38e1bdcbef501da970cad9335b389",
-    private_key_b = "74ed04f45c2a375a94189ef69661fa08235bb3b76be65934a0827262542e870c",
-    amount_a = 10;
+  account_b = "0xb295e245eD2fdf5776c3C8a49f0403BF0242262A",
+  private_key_a = "4085dde01ea641a0f4fd6586ca11fc1f5df38e1bdcbef501da970cad9335b389",
+  private_key_b = "74ed04f45c2a375a94189ef69661fa08235bb3b76be65934a0827262542e870c",
+  amount_a = 10;
 
 describe('check hash', function () {
   it('hash from adress', function () {
@@ -33,8 +33,9 @@ describe('check hash', function () {
 
 describe('check hash', function () {
   it('check signature', function () {
-    var sig = lykkeEth.signHash(lykkeEth.getHash(amount_a), private_key_a);
-    console.log(sig);
+    var result = "0x4aae2cfe98d7c1b2386b6198c212585b6e414592aaca031e0850f6ec107bdc3a0fa5d896d1050af500932f5d449a7f1e4e392b5b48e6db627773aac9fd468d121c";
+    var sig = lykkeEth.signHash(lykkeEth.getHash(account_a, account_b, amount_a), private_key_a);
+    assert.equal(result, sig);
   })
 })
 

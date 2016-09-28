@@ -14,9 +14,9 @@ var sha3bits = 256;
 exports.signHash = function (hash, privateKey) {
     var bufferHash = new Buffer(padToEven(stripHexPrefix(hash)), 'hex'),
         bufferPrivateKey = new Buffer(padToEven(stripHexPrefix(privateKey)), 'hex');
-
+        
     var sig = secp256k1.sign(bufferHash, bufferPrivateKey);
-    var result = Buffer.concat([sig.signature, intToBuffer(sig.recovery)])
+    var result = Buffer.concat([sig.signature, intToBuffer(sig.recovery + 27)])
     return '0x' + result.toString('hex');
 }
 
