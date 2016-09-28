@@ -35,7 +35,7 @@ exports.getHash = function (var_args) {
             buffer.push(new Buffer(padToEven(stripHexPrefix(item)), 'hex'));
         }
         else if (typeof item === 'number') {
-            buffer.push(new BN(item, 10).toBuffer('be', 32));
+            buffer.push(new BN(item, 10).toArrayLike(Buffer, 'be', 32));
         }
         else {
             throw new Error('invalid type')
