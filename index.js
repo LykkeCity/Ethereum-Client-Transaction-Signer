@@ -1,8 +1,10 @@
-const BN = require('bn.js')
-const SHA3 = require('keccakjs')
-const secp256k1 = require('secp256k1')
+const uuid = require('node-uuid');
+const ethWallet = require('ethereumjs-wallet');
+const ethUtil = require('ethereumjs-util');
+var BN = ethUtil.BN;
 
 var sha3bits = 256;
+var guidRegexp = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /**
  * Signs hash 'string' with private key 'string' returns 'string' signed hash (hex)
@@ -12,12 +14,12 @@ var sha3bits = 256;
  * @return {String}
  */
 exports.signHash = function (hash, privateKey) {
-    var bufferHash = new Buffer(padToEven(stripHexPrefix(hash)), 'hex'),
-        bufferPrivateKey = new Buffer(padToEven(stripHexPrefix(privateKey)), 'hex');
-        
-    var sig = secp256k1.sign(bufferHash, bufferPrivateKey);
-    var result = Buffer.concat([sig.signature, intToBuffer(sig.recovery + 27)])
-    return '0x' + result.toString('hex');
+    var bufferHash = ethUtil.toBuffer(ethUtil.addHexPrefix(hash)),
+        bufferPrivateKey = ethUtil.toBuffer(ethUtil.addHexPrefix(privateKey));
+
+    var sig = ethUtil.ecsign(bufferHash, bufferPrivateKey);
+    var result = ethUtil.toRpcSig(sig.v + 27, sig.r, sig.s);
+    return ethUtil.addHexPrefix(result);
 }
 
 /**
@@ -32,7 +34,12 @@ exports.getHash = function (var_args) {
     for (var i = 0; i < args.length; i++) {
         var item = args[i];
         if (typeof item === 'string') {
-            buffer.push(new Buffer(padToEven(stripHexPrefix(item)), 'hex'));
+            if (new RegExp(guidRegexp).test(item)) {
+                buffer.push(guidToBuffer(item));
+            }
+            else {
+                buffer.push(ethUtil.toBuffer(ethUtil.addHexPrefix(item)));
+            }
         }
         else if (typeof item === 'number') {
             buffer.push(new BN(item, 10).toArrayLike(Buffer, 'be', 32));
@@ -41,39 +48,21 @@ exports.getHash = function (var_args) {
             throw new Error('invalid type')
         }
     }
-    var hash = new SHA3(sha3bits).update(Buffer.concat(buffer));
-    return hash.digest('hex');
+    return ethUtil.bufferToHex(ethUtil.sha3(Buffer.concat(buffer), sha3bits));
 }
 
-function isHexPrefixed(str) {
-    return str.slice(0, 2) === '0x';
-}
 
-function padToEven(a) {
-    if (a.length % 2) a = '0' + a;
-    return a;
-}
-
-function stripHexPrefix(str) {
-    if (typeof str !== 'string') {
-        return str;
+exports.createAddress = function() {
+    var wallet = ethWallet.generate(); 
+    return {
+        privateKey: ethUtil.bufferToHex(wallet.privKey),
+        publicKey: ethUtil.bufferToHex(wallet.pubKey),
+        address: ethUtil.bufferToHex(ethUtil.privateToAddress(wallet.privKey))
     }
-    return isHexPrefixed(str) ? str.slice(2) : str;
 }
 
-function isValidPrivate(privateKey) {
-    return secp256k1.privateKeyVerify(privateKey);
-}
-
-function intToHex(i) {
-    var hex = i.toString(16);
-    if (hex.length % 2) {
-        hex = '0' + hex;
-    }
-    return '0x' + hex;
-}
-
-function intToBuffer(i) {
-    var hex = intToHex(i);
-    return new Buffer(hex.slice(2), 'hex');
+function guidToBuffer(guid) {
+    var guidBuffer = uuid.parse(guid);
+    var bn = new BN(guidBuffer, 'be');
+    return bn.toArrayLike(Buffer, 'be', 32);
 }

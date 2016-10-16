@@ -1,0 +1,91 @@
+<html>
+
+<head>
+    <script src="dist/lykke-ethereum.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+</head>
+<style>
+    .item {
+        padding: 10px;
+        border: 1px solid #ccc;
+    }
+</style>
+
+<body>
+    <div class="item">
+        <button onclick="newWallet()">New wallet</button>
+        <span>
+			Address: <b><span id="wallet-address"></span></b> Private key: <b><span id="wallet-private-key"></span></b>
+        </span>
+    </div>
+    <div class="item">
+        <div>
+            <button onclick="getHash()">Get hash</button>
+            <span>
+			Hash: <b><span id="resulted-hash"></span></b>
+            </span>
+        </div>
+        <div>
+            <div>
+                <label>Params (delim by lines)</label>
+                <textarea name="params" style="width: 500px" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="item">
+        <div>
+            <button onclick="signHash()">Sign hash</button>
+            <span>
+			Signed hash: <b><span id="signed-hash"></span></b>
+            </span>
+        </div>
+        <div>
+            <div>
+                <label>Hash</label>
+                <input name="hash" style="width: 500px" />
+            </div>
+            <div>
+                <label>Private key</label>
+                <input name="pivateKey" style="width: 500px" />
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function newWallet() {
+            var wallet = ethereumjs.createAddress();
+            $('#wallet-address').text(wallet.address);
+            $('#wallet-private-key').text(wallet.privateKey);
+        }
+
+        function signHash() {
+            var hash = $('[name=hash]').val(),
+                key = $('[name=pivateKey]').val(),
+                res = $('#signed-hash');
+            res.text('');
+            var signed = ethereumjs.signHash(hash, key);
+            res.text(signed);
+        }
+
+        function getHash() {
+            var data = $('[name=params]').val(),
+                res = $('#resulted-hash');
+            res.text('');
+            var array = [];
+            var split = data.split('\n');
+            for (var i = 0; i < split.length; i++) {
+                var item = split[i];
+                if (item === "")
+                    continue;
+                if (item.substr(0, 2) === '0x' || isNaN(item))
+                    array.push(item);
+                else
+                    array.push(parseInt(item));
+            }
+            var hash = ethereumjs.getHash.apply(this, array);
+            res.text(hash);
+        }
+    </script>
+</body>
+
+</html>

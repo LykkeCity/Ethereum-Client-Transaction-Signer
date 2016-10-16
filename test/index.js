@@ -11,31 +11,23 @@ var account_a = "0x960336a077fB32d675405bd0A6cD0cb74aaa5062",
 
 describe('check hash', function () {
   it('hash from adress', function () {
-    var result = "c432894b6d988881dcc107a658b0b7f7334e5410bc422ef4654fd382070b9c5a";
+    var result = "0xc432894b6d988881dcc107a658b0b7f7334e5410bc422ef4654fd382070b9c5a";
     assert.equal(result, lykkeEth.getHash(account_a));
   })
 
   it('hash from adress + addre ss', function () {
-    var result = "0706790bb1d27247d755f75904f842a50142d5fd0318052fdf51dc1885e46f97";
+    var result = "0x0706790bb1d27247d755f75904f842a50142d5fd0318052fdf51dc1885e46f97";
     assert.equal(result, lykkeEth.getHash(account_a, account_b));
   })
 
   it('hash from number', function () {
-    var result = "c65a7bb8d6351c1cf70c95a316cc6a92839c986682d98bc35f958f4883f9d2a8";
+    var result = "0xc65a7bb8d6351c1cf70c95a316cc6a92839c986682d98bc35f958f4883f9d2a8";
     assert.equal(result, lykkeEth.getHash(amount_a));
   })
 
   it('hash from address + address + number', function () {
-    var result = "0d95bd996b826a43630082d99723ae1fb5d24c9077551a36e3c07ddc8e1b8701";
+    var result = "0x0d95bd996b826a43630082d99723ae1fb5d24c9077551a36e3c07ddc8e1b8701";
     assert.equal(result, lykkeEth.getHash(account_a, account_b, amount_a));
-  })
-})
-
-describe('check hash', function () {
-  it('check signature', function () {
-    var result = "0x4aae2cfe98d7c1b2386b6198c212585b6e414592aaca031e0850f6ec107bdc3a0fa5d896d1050af500932f5d449a7f1e4e392b5b48e6db627773aac9fd468d121c";
-    var sig = lykkeEth.signHash(lykkeEth.getHash(account_a, account_b, amount_a), private_key_a);
-    assert.equal(result, sig);
   })
 })
 
