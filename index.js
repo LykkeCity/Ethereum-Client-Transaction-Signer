@@ -13,7 +13,7 @@ var guidRegexp = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0
  * @param {Buffer} privateKey
  * @return {String}
  */
-exports.signHash = function (hash, privateKey) {
+exports.signHash = function(hash, privateKey) {
     var bufferHash = ethUtil.toBuffer(ethUtil.addHexPrefix(hash)),
         bufferPrivateKey = ethUtil.toBuffer(ethUtil.addHexPrefix(privateKey));
 
@@ -23,11 +23,11 @@ exports.signHash = function (hash, privateKey) {
 }
 
 /**
-* Calculates hash from input arguments returns 'string' hex
-* @param {...*} var_args (hex string or number)
-* @return {String}
-*/
-exports.getHash = function (var_args) {
+ * Calculates hash from input arguments returns 'string' hex
+ * @param {...*} var_args (hex string or number)
+ * @return {String}
+ */
+exports.getHash = function(var_args) {
     var args = arguments,
         buffer = [];
 
@@ -36,24 +36,24 @@ exports.getHash = function (var_args) {
         if (typeof item === 'string') {
             if (new RegExp(guidRegexp).test(item)) {
                 buffer.push(guidToBuffer(item));
-            }
-            else {
+            } else {
                 buffer.push(ethUtil.toBuffer(ethUtil.addHexPrefix(item)));
             }
-        }
-        else if (typeof item === 'number') {
+        } else if (typeof item === 'number') {
             buffer.push(new BN(item, 10).toArrayLike(Buffer, 'be', 32));
-        }
-        else {
+        } else {
             throw new Error('invalid type')
         }
     }
     return ethUtil.bufferToHex(ethUtil.sha3(Buffer.concat(buffer), sha3bits));
 }
 
-
+/**
+ * Creates new ethereum wallet and returns private key, public key and address
+ * @return {{privateKey: string, publicKey: string, address: string}}
+ */
 exports.createAddress = function() {
-    var wallet = ethWallet.generate(); 
+    var wallet = ethWallet.generate();
     return {
         privateKey: ethUtil.bufferToHex(wallet.privKey),
         publicKey: ethUtil.bufferToHex(wallet.pubKey),
