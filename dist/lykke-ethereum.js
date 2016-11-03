@@ -21996,16 +21996,13 @@ exports.getHash = function(var_args) {
 }
 
 /**
- * Creates new ethereum wallet and returns private key, public key and address
- * @return {{privateKey: string, publicKey: string, address: string}}
+ * Creates new ethereum wallet and returns address and public key
+ * @param {String} privateKey (hex string)
+ * @return {String} "<address>-<public key>"
  */
-exports.createAddress = function() {
-    var wallet = ethWallet.generate();
-    return {
-        privateKey: ethUtil.bufferToHex(wallet.privKey),
-        publicKey: ethUtil.bufferToHex(wallet.pubKey),
-        address: ethUtil.bufferToHex(ethUtil.privateToAddress(wallet.privKey))
-    }
+exports.createAddress = function(privateKey) {
+    var key = ethUtil.addHexPrefix(privateKey);
+    return ethUtil.bufferToHex(ethUtil.privateToAddress(key)) + '-' + ethUtil.bufferToHex(ethUtil.privateToPublic(key));
 }
 
 function guidToBuffer(guid) {
