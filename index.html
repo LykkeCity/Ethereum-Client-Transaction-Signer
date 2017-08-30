@@ -85,7 +85,7 @@
             res.text(signed);
         }
 
-        function signHash() {
+        function signTransaction() {
             var transaction = $('[name=transaction]').val(),
                 key = $('[name=pivateKeyTransaction]').val(),
                 res = $('#signed-transaction');
