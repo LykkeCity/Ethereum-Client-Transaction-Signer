@@ -1,10 +1,32 @@
 const uuid = require('node-uuid');
 const ethWallet = require('ethereumjs-wallet');
 const ethUtil = require('ethereumjs-util');
+const Transaction = require('ethereumjs-tx');
 var BN = ethUtil.BN;
 
 var sha3bits = 256;
 var guidRegexp = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/**
+ * Signs transaction 'string' with private key 'string' returns 'string' signed transaction (hex)
+ * @method signTransaction
+ * @param {String} transaction
+ * @param {String} privateKey
+ * @return {String}
+ */
+exports.signTransaction = function (transaction, privateKey) {
+    var bufferTransaction = ethUtil.toBuffer(ethUtil.addHexPrefix(transaction)),
+        bufferPrivateKey = ethUtil.toBuffer(ethUtil.addHexPrefix(privateKey)),
+        transactionHash = ethUtil.rlphash(bufferTransaction);
+    var tx = new Transaction(bufferTransaction);
+    tx.sign(bufferPrivateKey)
+    const serializedTx = tx.serialize().toString('hex');
+
+    //var sig = ethUtil.ecsign(transactionHash, bufferPrivateKey);
+    //var result = ethUtil.toRpcSig(sig.v + 27, sig.r, sig.s);
+    return serializedTx;// transaction + result;
+}
+
 
 /**
  * Signs hash 'string' with private key 'string' returns 'string' signed hash (hex)
