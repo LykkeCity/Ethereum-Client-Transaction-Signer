@@ -50,6 +50,24 @@
             </div>
         </div>
     </div>
+    <div class="item">
+        <div>
+            <button onclick="signTransaction()">Sign Transaction</button>
+            <span>
+                Signed Transaction: <b><span id="signed-transaction"></span></b>
+            </span>
+        </div>
+        <div>
+            <div>
+                <label>Transaction</label>
+                <input name="transaction" style="width: 500px">
+            </div>
+            <div>
+                <label>Private key</label>
+                <input name="pivateKeyTransaction" style="width: 500px">
+            </div>
+        </div>
+    </div>
 
     <script>
         function newWallet() {
@@ -64,6 +82,15 @@
                 res = $('#signed-hash');
             res.text('');
             var signed = ethereumjs.signHash(hash, key);
+            res.text(signed);
+        }
+
+        function signHash() {
+            var transaction = $('[name=transaction]').val(),
+                key = $('[name=pivateKeyTransaction]').val(),
+                res = $('#signed-transaction');
+            res.text('');
+            var signed = ethereumjs.signTransaction(transaction, key);
             res.text(signed);
         }
 
